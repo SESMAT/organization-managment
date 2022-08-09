@@ -17,23 +17,27 @@ import com.ntg.organization.organization.service.EmployeeService;
 @RestController
 @RequestMapping("/emp/v1")
 public class EmployeeController {
-	
+
 	@Autowired
 	private EmployeeService employeeService;
-	
-	
+
 	@GetMapping(value = "/all")
 	public List<Employee> getAllEmployee() {
 		return employeeService.getAllEmployee();
 	}
-	
+
+	@GetMapping(value = "/getByName/{name}/{email}")
+	public Employee getEmployeeByName(@PathVariable String name, @PathVariable String email) {
+		return employeeService.getEmployeeByName(name, email);
+	}
+
 	@PostMapping(value = "/add")
-	public boolean createNewEmployee(@RequestBody Employee newEmp) {
+	public Employee createNewEmployee(@RequestBody Employee newEmp) {
 		return employeeService.createNewEmployee(newEmp);
 	}
-	
+
 	@DeleteMapping(value = "/del/{empId}")
-	public boolean deleteEmployee(@PathVariable (value = "empId") Long id) {
+	public boolean deleteEmployee(@PathVariable(value = "empId") Long id) {
 		return employeeService.deleteEmployeeById(id);
 	}
 
