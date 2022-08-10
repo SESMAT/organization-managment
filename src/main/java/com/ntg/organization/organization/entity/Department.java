@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +34,8 @@ public class Department {
 	@Column(name = "dept_name", length = 100, nullable = false)
 	private String deptName;
 	
-	@OneToMany(mappedBy = "employees")
-	private List<Employee> employees;
+	//@JsonIgnore
+	//@OneToMany(mappedBy = "department")
+	//private List<Employee> employees;
+	
 }
