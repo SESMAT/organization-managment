@@ -2,15 +2,20 @@ package com.ntg.organization.organization.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ntg.organization.organization.dto.CustomUser;
+import com.ntg.organization.organization.entity.Role;
 import com.ntg.organization.organization.entity.User;
 import com.ntg.organization.organization.respository.UserRepository;
 
@@ -31,15 +36,18 @@ public class UserService implements UserDetailsService {
 		if (user == null)
 			throw new UsernameNotFoundException("User " + username + " Not found");
 
-		return new org.springframework.security.core.userdetails.User(user.getUserName(), 
-				user.getPassword(),
-				mapToGrantedAuthorities());
+		return new CustomUser(user.getUserName(), 
+				user.getPassword(),true, true, true,true,
+				mapToGrantedAuthorities(user.getRoles()), user.getFirstName(), user.getLastName());
 
 	}
 
-	private static List<GrantedAuthority> mapToGrantedAuthorities() {
-		List<GrantedAuthority> grantedAuthoritiesList = new ArrayList<>();
-		return grantedAuthoritiesList;
+	private static List<GrantedAuthority> mapToGrantedAuthorities(Set<Role> roles) {	
+		if(roles != null && !roles.isEmpty()) {
+			return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+		}
+		
+		return new ArrayList<GrantedAuthority>();
 
 	}
 	
@@ -50,5 +58,9 @@ public class UserService implements UserDetailsService {
 		}
 		
 		return user;
+	}
+
+	public List<User> getAllUsers() {
+		return (List<User>) userRepository.findAll();
 	}
 }
