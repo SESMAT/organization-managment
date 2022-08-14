@@ -19,10 +19,26 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserService userService;
+	
+	private static final String[] AUTH_WHITELIST = {
+            // -- Swagger UI v2
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            // -- Swagger UI v3 (OpenAPI)
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/user/v1/add"
+            // other public endpoints of your API may be appended to this array
+    };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/user/v1/add").permitAll()
+		http.csrf().disable().authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
 		.anyRequest().authenticated().and().httpBasic();
 	}
 
